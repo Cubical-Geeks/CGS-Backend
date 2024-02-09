@@ -1,4 +1,5 @@
 const Employee = require("../Models/employee.model");
+const employeeHistory = require("../Models/employeeHistory.models");
 
 class EmployeeService {
   async submit(req) {
@@ -44,6 +45,35 @@ class EmployeeService {
       return employee;
     } catch (error) {
       throw new Error(error);
+    }
+  }
+
+  async employeeHistory (req) {
+    try {
+      const { department, designation, StartDate, EndDate, salary, shift } = req.body;
+      const employee_history = new employeeHistory({
+        department: department,
+        designation: designation,
+        StartDate: StartDate,
+        EndDate: EndDate,
+        salary: salary,
+        shift: shift
+      });
+      await employee_history.save();
+
+      return employee_history;
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  async getEmployeeHistory () {
+    try {
+      const empistData = await employeeHistory.find();
+
+      return empistData;
+    } catch (error) {
+      throw new Error(error)
     }
   }
 }
