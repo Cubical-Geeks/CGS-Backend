@@ -4,6 +4,7 @@ const cors = require("cors");
 
 const userRoutes = require("./Routes/user.routes");
 const employeeRoutes = require("./Routes/employee.routes");
+const empHistoryRoutes = require("./Routes/empHistory.routes");
 app.use(cors());
 app.use(express.json());
 
@@ -11,6 +12,8 @@ app.use(express.json());
 app.use("/api/user",userRoutes);
 
 app.use("/api/employee", employeeRoutes);
+
+app.use("/api/employee", empHistoryRoutes);
 
 //sort route from a to z
 

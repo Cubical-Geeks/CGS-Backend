@@ -49,4 +49,8 @@ const fetchingFormData = async (req, res) => {
   }
 };
 
-module.exports = { submit, fetchingFormData };
+const employeeHistory = async (req, res) => {
+  
+}
+
+module.exports = { submit, fetchingFormData, employeeHistory };
