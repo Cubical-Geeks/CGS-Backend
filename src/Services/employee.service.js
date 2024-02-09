@@ -50,8 +50,9 @@ class EmployeeService {
 
   async employeeHistory (req) {
     try {
-      const { department, designation, StartDate, EndDate, salary, shift } = req.body;
+      const { name, department, designation, StartDate, EndDate, salary, shift } = req.body;
       const employee_history = new employeeHistory({
+        name: name,
         department: department,
         designation: designation,
         StartDate: StartDate,
