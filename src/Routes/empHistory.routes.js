@@ -5,7 +5,6 @@ const empDetController = require('../Controllers/empDetail.controller');
 router.post('/employeeHistory', empDetController.employeeHistory);
 
 // fetching route of employee history
-router.get("/fetchingEmployeeHistory/:name", empDetController.fetchingEmployeeHistory);
-
+router.get("/fetchingEmployeeHistory", empDetController.fetchingEmployeeHistory);
 
 module.exports = router;

@@ -5,18 +5,30 @@ const cors = require("cors");
 const userRoutes = require("./Routes/user.routes");
 const employeeRoutes = require("./Routes/employee.routes");
 const empHistoryRoutes = require("./Routes/empHistory.routes");
+const projNatureRoute = require("./Routes/projNature.routes");
+const testFunc = require("./Routes/test.routes");
+const salesUserRoutes = require('./Routes/salesUser.routes')
+const productionUserRoutes = require('./Routes/productionuser.routes');
+const projectRoutes = require("./Routes/project.routes");
+
 app.use(cors());
 app.use(express.json());
 
 //ROUTES
-app.use("/api/user",userRoutes);
+app.use("/api", testFunc);
+
+app.use("/api/user", userRoutes);
+
+app.use("/api/salesuser", salesUserRoutes);
+
+app.use("/api/productionUser", productionUserRoutes);
 
 app.use("/api/employee", employeeRoutes);
 
-app.use("/api/employee", empHistoryRoutes);
+// app.use("/api/employee", empHistoryRoutes);
 
-//sort route from a to z
+app.use("/dropdown", projNatureRoute);
 
-
+app.use("/api/projects", projectRoutes);
 
 module.exports = app;

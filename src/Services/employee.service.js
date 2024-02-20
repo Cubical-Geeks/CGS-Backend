@@ -17,6 +17,7 @@ class EmployeeService {
         emergencyPhone,
         username,
         password,
+        history,
       } = req.body;
       const employee = new Employee({
         id: id,
@@ -31,6 +32,7 @@ class EmployeeService {
         emergencyPhone: emergencyPhone,
         username: username,
         password: password,
+        history: history,
       });
       await employee.save();
       return employee;
@@ -48,33 +50,71 @@ class EmployeeService {
     }
   }
 
-  async employeeHistory (req) {
+  async employeeHistory(req) {
     try {
-      const { name, department, designation, StartDate, EndDate, salary, shift } = req.body;
+      const { department, designation, StartDate, EndDate, salary, shift } =
+        req.body;
       const employee_history = new employeeHistory({
-        name: name,
         department: department,
         designation: designation,
         StartDate: StartDate,
         EndDate: EndDate,
         salary: salary,
-        shift: shift
+        shift: shift,
       });
       await employee_history.save();
 
       return employee_history;
     } catch (error) {
-      throw new Error(error)
+      throw new Error(error);
     }
   }
 
-  async getEmployeeHistory () {
+  async getEmployeeHistory() {
     try {
       const empistData = await employeeHistory.find();
 
       return empistData;
     } catch (error) {
-      throw new Error(error)
+      throw new Error(error);
+    }
+  }
+
+  async getEmployeeData(req) {
+    try {
+      const { id } = req.params;
+      const employees = await Employee.findOne({ id: id });
+      return employees;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async addRecord(req) {
+    try {
+      const { id } = req.params;
+      const { department, designation, StartDate, EndDate, salary, shift } =
+        req.body;
+      const employee_history = await Employee.findOneAndUpdate(
+        { id: id },
+        {
+          $push: {
+            history: {
+              department,
+              designation,
+              StartDate,
+              EndDate,
+              salary,
+              shift,
+            },
+          },
+        },
+        { new: true }
+      );
+      await employee_history.save();
+      return employee_history;
+    } catch (error) {
+      throw new Error(error);
     }
   }
 }

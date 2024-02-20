@@ -1,5 +1,6 @@
 const { helperService } = require("../Helper/helper");
 const User = require("../Models/user.model");
+const generateToken = require("../Middlewares/auth");
 
 class UserService {
   async signup(req) {
@@ -11,7 +12,8 @@ class UserService {
         password: hashPassword,
       });
       await user.save();
-      return user;
+      const token = await generateToken.createToken(user._id);
+      return { user, token };
     } catch (error) {
       throw new Error(error);
     }
@@ -25,7 +27,8 @@ class UserService {
         user &&
         (await helperService.comparePassword(password, user.password))
       ) {
-        return user;
+        const token = await generateToken.createToken(user._id);
+        return { user, token };
       }
       return false;
     } catch (error) {

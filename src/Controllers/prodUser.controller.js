@@ -1,6 +1,5 @@
-const UserService = require("../Services/user.service");
-const auth = require("../Middlewares/auth");
-var userService = new UserService();
+const ProductionUserService = require("../Services/prodUser.service");
+var productionUserService = new ProductionUserService();
 
 const signup = async (req, res) => {
   try {
@@ -9,21 +8,23 @@ const signup = async (req, res) => {
       return res.status(422).json({
         success: false,
         data: [],
-        message: ["username and password is required"],
+        message: ["Username and Password are mandatory!"],
       });
     }
-    const user = await userService.signup(req);
-    if (user) {
+
+    const response = await productionUserService.signup(req);
+    if (response) {
       return res.status(200).json({
         success: true,
         data: [],
-        message: ["account created successfully"],
+        message: ["User created successfully"],
       });
     }
-    return res.status(422).json({
-      success: false,
+
+    return res.status(404).json({
+      uccess: false,
       data: [],
-      message: ["something went wrong please try again"],
+      message: ["Something went wrong please try again!"],
     });
   } catch (error) {
     return res.status(500).json({
@@ -36,28 +37,27 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const user = await userService.login(req);
-    if (user) {
-      const accessToken = await auth.createToken(user._id);
+    const response = await productionUserService.login(req);
+    if (response) {
       return res.status(200).json({
         success: true,
-        data: { accessToken }, 
-        message: ["successfully logged in"],
+        data: [response],
+        message: ["User created successfully"],
       });
     }
-    return res.status(422).json({
+
+    return res.status(404).json({
       success: false,
       data: [],
-      message: ["username or password is incorrect"],
+      message: [error.message],
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
       data: [],
-      message: [error.message]
-    })
+      message: [error.message],
+    });
   }
 };
-
 
 module.exports = { signup, login };
