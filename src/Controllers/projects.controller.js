@@ -29,20 +29,90 @@ const submit = async (req, res) => {
 const getProjects = async (req, res) => {
   try {
     const response = await projectService.getProjects();
-    if(response) {
+    if (response) {
       return res.status(200).json({
         success: true,
         data: [response],
-        message: ["Projects fetched successfully"]
-      })
+        message: ["Projects fetched successfully"],
+      });
     }
   } catch (error) {
     return res.status(500).json({
       success: false,
       data: [],
-      message: [error.message]
-    })
+      message: [error.message],
+    });
   }
-}
+};
 
-module.exports = { submit, getProjects };
+const searchProject = async (req, res) => {
+  try {
+    const response = await projectService.searchProject(req);
+    if (response) {
+      return res.status(200).json({
+        success: true,
+        data: [response],
+        message: ["Projects searched successfully"],
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      data: [],
+      message: [error.message],
+    });
+  }
+};
+
+const updateProject = async (req, res) => {
+  try {
+    const response = await projectService.updateProject(req);
+    if (response) {
+      return res.status(200).json({
+        success: true,
+        data: [response],
+        message: ["Project updated Successfully"],
+      });
+    }
+
+    return res.status(422).json({
+      success: false,
+      data: [],
+      message: [error.message],
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      data: [],
+      message: [error.message],
+    });
+  }
+};
+
+// To be alloted
+const allotedSubmit = async (req, res) => {
+  try {
+    const response = await projectService.allotedSubmit(req);
+    if (response) {
+      return res.status(200).json({
+        success: true,
+        data: [response],
+        message: ["Project posted Successfully"],
+      });
+    }
+
+    return res.status(422).json({
+      success: false,
+      data: [],
+      message: [error.message],
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      data: [],
+      message: [error.message],
+    });
+  }
+};
+
+module.exports = { submit, getProjects, searchProject, updateProject, allotedSubmit };

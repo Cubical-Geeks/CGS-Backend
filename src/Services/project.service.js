@@ -1,6 +1,5 @@
 const Project = require("../Models/projects.model");
-// import { uploadOnCloudinary } from "../Helper/cloudinary";
-const {uploadOnCloudinary} = require('../Helper/cloudinary');
+const { uploadOnCloudinary } = require("../Helper/cloudinary");
 
 class ProjectService {
   async submit(req) {
@@ -9,46 +8,46 @@ class ProjectService {
         id,
         title,
         startDate,
-        deleiveryDate,
+        deliveryDate,
         platform,
         department,
         nature,
+        status,
         profile,
         salesPerson,
         amount,
         clientName,
         description,
       } = req.body;
-      
-      // Assuming you are using multer for file upload and the file is available in req.file
-      const { path } = req.file;
-
-      // Upload the file to Cloudinary
-      const cloudinaryResponse = await uploadOnCloudinary(path);
-
-      // Once the file is uploaded, construct the project object with the Cloudinary URL
+  
+      let uploadedAttachmentUrl = null; // Initialize attachment URL as null
+  
+      if (req.file) {
+        uploadedAttachmentUrl = await uploadOnCloudinary(req.file.path);
+      }
+  
       const project = new Project({
-        id: id,
-        title: title,
-        startDate: startDate,
-        deleiveryDate: deleiveryDate,
-        platform: platform,
-        department: department,
-        nature: nature,
-        profile: profile,
-        salesPerson: salesPerson,
-        amount: amount,
-        clientName: clientName,
-        description: description,
-        attachments: cloudinaryResponse.url, // Use the Cloudinary URL here
+        id,
+        title,
+        startDate,
+        deliveryDate,
+        platform,
+        department,
+        nature,
+        status,
+        profile,
+        salesPerson,
+        amount,
+        clientName,
+        description,
+        attachments: uploadedAttachmentUrl,
       });
-
-      // Save the project to the database
+  
       await project.save();
-
+  
       return project;
     } catch (error) {
-      throw new Error(error);
+      throw error;
     }
   }
 
@@ -57,7 +56,94 @@ class ProjectService {
       const response = await Project.find();
       return response;
     } catch (error) {
-      throw new Error(error);
+      throw error;
+    }
+  }
+
+  async searchProject(req) {
+    try {
+      const { id } = req.params;
+      const response = await Project.findOne({ id: id });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateProject(req) {
+    try {
+      const { id } = req.params;
+      const project = await Project.findOne({ id: id });
+
+      if (!project) {
+        throw new Error("Project not found");
+      }
+      let updateData = {
+        ...req.body,
+      };
+
+      if (req.file) {
+        const uploadedAttachmentUrl = await uploadOnCloudinary(req.file.path);
+        updateData.attachments = uploadedAttachmentUrl;
+      }
+
+      const updatedProject = await Project.findOneAndUpdate(
+        { id },
+        updateData,
+        { new: true }
+      );
+      return updatedProject;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async allotedSubmit(req) {
+    try {
+      const {
+        id,
+        title,
+        startDate,
+        deliveryDate,
+        platform,
+        department,
+        status,
+        nature,
+        profile,
+        salesPerson,
+        amount,
+        clientName,
+        description,
+      } = req.body;
+
+      // Assuming attachments is an array of files, we will handle each file separately
+      const attachments = req.file; // get the file from request
+      console.log("request......", req.file);
+
+      const uploadedAttachmentUrl = await uploadOnCloudinary(attachments.path);
+
+      const project = new Project({
+        id,
+        title,
+        startDate,
+        deliveryDate,
+        platform,
+        department,
+        status,
+        nature,
+        profile,
+        salesPerson,
+        amount,
+        clientName,
+        description,
+        attachments: uploadedAttachmentUrl,
+      });
+
+      await project.save();
+
+      return project;
+    } catch (error) {
+      throw error;
     }
   }
 }

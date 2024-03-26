@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const bodyParser = require("body-parser");
 
 const userRoutes = require("./Routes/user.routes");
 const employeeRoutes = require("./Routes/employee.routes");
@@ -10,12 +11,24 @@ const testFunc = require("./Routes/test.routes");
 const salesUserRoutes = require("./Routes/salesUser.routes");
 const productionUserRoutes = require("./Routes/productionuser.routes");
 const projectRoutes = require("./Routes/project.routes");
+const allotedRoutes = require("./Routes/allotedRoutes.routes");
+const progressRoutes = require("./Routes/progress.routes");
+const reviewRoutes = require("./Routes/review.routes");
+const completedRoutes = require("./Routes/completed.routes");
 const upload = require("./Middlewares/multer.middlewares");
 
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.urlencoded({limit:'500mb',extended:true}));
 
 //ROUTES
+
+app.get("/", (req, res) => {
+  return res.status(200).json({
+    success: true,
+    message: "hello world",
+  });
+});
 app.use("/api", testFunc);
 
 app.use("/api/user", userRoutes);
@@ -30,6 +43,15 @@ app.use("/api/employee", employeeRoutes);
 
 app.use("/dropdown", projNatureRoute);
 
-app.use("/api/projects", upload.single("file"), projectRoutes);
+app.use("/api/projects", projectRoutes);
+
+// to be alloted
+app.use("/api/alloted", allotedRoutes)
+
+app.use("/api/progress", progressRoutes)
+
+app.use("/api/review", reviewRoutes)
+
+app.use("/api/completed", completedRoutes)
 
 module.exports = app;

@@ -13,4 +13,10 @@ router.get("/search/:id", empDetController.getEmployeeData);
 // add records
 router.post("/addRecord/:id", empDetController.addRecord);
 
+// update data
+router.put("/update/:id", empDetController.updateEmployee);
+
+// delete data
+router.delete("/delete/:id", empDetController.deleteEmployee);
+
 module.exports = router;

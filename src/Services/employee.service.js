@@ -1,5 +1,5 @@
 const Employee = require("../Models/employee.model");
-const employeeHistory = require("../Models/employeeHistory.models");
+const { Types } = require("mongoose");
 
 class EmployeeService {
   async submit(req) {
@@ -8,6 +8,7 @@ class EmployeeService {
         id,
         name,
         joiningDate,
+        EndDate,
         fathersName,
         cnic,
         email,
@@ -23,6 +24,7 @@ class EmployeeService {
         id: id,
         name: name,
         joiningDate: joiningDate,
+        EndDate: EndDate,
         fathersName: fathersName,
         cnic: cnic,
         email: email,
@@ -50,41 +52,41 @@ class EmployeeService {
     }
   }
 
-  async employeeHistory(req) {
-    try {
-      const { department, designation, StartDate, EndDate, salary, shift } =
-        req.body;
-      const employee_history = new employeeHistory({
-        department: department,
-        designation: designation,
-        StartDate: StartDate,
-        EndDate: EndDate,
-        salary: salary,
-        shift: shift,
-      });
-      await employee_history.save();
+  // async employeeHistory(req) {
+  //   try {
+  //     const { department, designation, StartDate, EndDate, salary, shift } =
+  //       req.body;
+  //     const employee_history = new employeeHistory({
+  //       department: department,
+  //       designation: designation,
+  //       StartDate: StartDate,
+  //       EndDate: EndDate,
+  //       salary: salary,
+  //       shift: shift,
+  //     });
+  //     await employee_history.save();
 
-      return employee_history;
-    } catch (error) {
-      throw new Error(error);
-    }
-  }
+  //     return employee_history;
+  //   } catch (error) {
+  //     throw new Error(error);
+  //   }
+  // }
 
-  async getEmployeeHistory() {
-    try {
-      const empistData = await employeeHistory.find();
+  // async getEmployeeHistory() {
+  //   try {
+  //     const empistData = await employeeHistory.find();
 
-      return empistData;
-    } catch (error) {
-      throw new Error(error);
-    }
-  }
+  //     return empistData;
+  //   } catch (error) {
+  //     throw new Error(error);
+  //   }
+  // }
 
   async getEmployeeData(req) {
     try {
       const { id } = req.params;
-      const employees = await Employee.findOne({ id: id });
-      return employees;
+      const employee = await Employee.findOne({ id: id });
+      return employee;
     } catch (error) {
       throw new Error(error);
     }
@@ -93,7 +95,7 @@ class EmployeeService {
   async addRecord(req) {
     try {
       const { id } = req.params;
-      const { department, designation, StartDate, EndDate, salary, shift } =
+      const { department, designation, salary, shift, bank, accountNumber } =
         req.body;
       const employee_history = await Employee.findOneAndUpdate(
         { id: id },
@@ -102,10 +104,10 @@ class EmployeeService {
             history: {
               department,
               designation,
-              StartDate,
-              EndDate,
               salary,
               shift,
+              bank,
+              accountNumber,
             },
           },
         },
@@ -115,6 +117,56 @@ class EmployeeService {
       return employee_history;
     } catch (error) {
       throw new Error(error);
+    }
+  }
+
+  async updateEmployee(req) {
+    try {
+      const { id } = req.params;
+      const updatedData = req.body;
+
+      const allowedFields = {
+        name: updatedData.name,
+        joiningDate: updatedData.joiningDate,
+        EndDate: updatedData.EndDate,
+        fathersName: updatedData.fathersName,
+        cnic: updatedData.cnic,
+        email: updatedData.email,
+        phone: updatedData.phone,
+        reference: updatedData.reference,
+        address: updatedData.address,
+        emergencyPhone: updatedData.emergencyPhone,
+        username: updatedData.username,
+        password: updatedData.password,
+      };
+
+      const updatedEmployee = await Employee.findOneAndUpdate(
+        { id }, // Use id field for comparison
+        allowedFields,
+        { new: true }
+      );
+
+      if (!updatedEmployee) {
+        throw new Error("Employee not found");
+      }
+
+      return updatedEmployee;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async deleteEmployee(req) {
+    try {
+      const { id } = req.params;
+      const deletedEmployee = await Employee.findOneAndDelete({ id: id });
+      if (!deletedEmployee) {
+        throw new Error("Employee not found");
+      }
+      return deletedEmployee;
+    } catch (error) {
+      console.error("Error deleting employee:", error);
+      throw error;
     }
   }
 }

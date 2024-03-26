@@ -1,15 +1,31 @@
-const multer = require('multer');
+const multer = require("multer");
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "../../public/temp");
+  destinate: function (req, file, cb) {
+    cb(null, "./uploads");
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.originalname);
+    cb(null, Date.now() + "-" + file.originalname);
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage: storage,
+  fileFilter: function (req, file, cb) {
+    if (
+      file.mimetype == "image/png" ||
+      file.mimetype == "image/jpg" ||
+      file.mimetype == "image/jpeg" ||
+      file.mimetype == "video/mp3" ||
+      file.mimetype == "video/mp4" ||
+      file.mimetype == "application/pdf"
+    ) {
+      cb(null, true);
+    } else {
+      cb(null, false);
+      return cb(new Error("invalid file type"));
+    }
+  },
+});
 
-module.exports = upload;
+module.exports = { upload };

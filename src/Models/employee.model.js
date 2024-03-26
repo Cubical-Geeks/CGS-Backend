@@ -10,19 +10,19 @@ const employeeHistorySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    StartDate: {
-      type: String,
-      required: true,
-    },
-    EndDate: {
-      type: String,
-      required: true,
-    },
     salary: {
       type: Number,
       required: true,
     },
     shift: {
+      type: String,
+      required: true,
+    },
+    bank: {
+      type: String, 
+      required: true,
+    },
+    accountNumber: {
       type: String,
       required: true,
     },
@@ -34,7 +34,6 @@ const employeeSchema = new mongoose.Schema(
   {
     id: {
       type: Number,
-      unique: true,
       required: true,
     },
     name: {
@@ -42,8 +41,11 @@ const employeeSchema = new mongoose.Schema(
       required: true,
     },
     joiningDate: {
-      type: Date,
+      type: String,
       required: true,
+    },
+    EndDate: {
+      type: String
     },
     fathersName: {
       type: String,
@@ -63,7 +65,7 @@ const employeeSchema = new mongoose.Schema(
     },
     reference: {
       type: String,
-      required: true,
+      required: true
     },
     address: {
       type: String,
@@ -71,7 +73,7 @@ const employeeSchema = new mongoose.Schema(
     },
     emergencyPhone: {
       type: Number,
-      required: true,
+      required: true
     },
     username: {
       type: String,
